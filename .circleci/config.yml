@@ -5,4 +5,4 @@
        - image: circleci/ruby:2.4.1
      steps:
        - checkout
-       - run: curl -noproxy "*" https://brianoh1979.github.io
+       - run: curl -noproxy "*" https://brianoh1979.github.io/button-form6.php
