@@ -21,8 +21,10 @@ jobs:
           name: Install Ruby Dependencies
           command: bundle install
       - run: 
-          name: Set up DB
+          name: Set up DB 1
           command: bundle exec rake db:create db:schema:load --trace
+      - run: 
+          name: Set up DB 2
           command: bundle exec rake db:migrate
         environment:
           DATABASE_URL: "postgres://ubuntu@localhost:5432/db_name"
