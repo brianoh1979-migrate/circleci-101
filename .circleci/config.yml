@@ -1,30 +1,57 @@
 version: 2
 jobs:
-  build:
-    docker:
-      - image: golang:1.6.4-jessie   # (1)
-    working_directory: /go/src/github.com/CircleCI-Public/circleci-demo-docker
+  build-and-test:
+    macos:
+      xcode: "9.0"
+
     steps:
       - checkout
-      # ... steps for building/testing app ...
-
-      - setup_remote_docker:   # (2)
-          docker_layer_caching: true # (3)
-
-      # use a primary image that already has Docker (recommended)
-      # or install it during a build like we do here
       - run:
-          name: Install Docker client
+          name: Fetch CocoaPods Specs
           command: |
-            set -x
-            VER="17.03.0-ce"
-            curl -L -o /tmp/docker-$VER.tgz https://download.docker.com/linux/static/stable/x86_64/docker-$VER.tgz
-            tar -xz -C /tmp -f /tmp/docker-$VER.tgz
-            mv /tmp/docker/* /usr/bin
+            curl https://cocoapods-specs.circleci.com/fetch-cocoapods-repo-from-s3.sh | bash -s cf
+      - run:
+          name: Install CocoaPods
+          command: pod install --verbose
 
-      # build and push Docker image
-      - run: |
-          TAG=0.1.$CIRCLE_BUILD_NUM
-          docker build -t   CircleCI-Public/circleci-demo-docker:$TAG .     
-          docker login -u $DOCKER_USER -p $DOCKER_PASS         # (4)
-          docker push CircleCI-Public/circleci-demo-docker:$TAG
+      - run:
+          name: Build and run tests
+          command: fastlane scan
+          environment:
+            SCAN_DEVICE: iPhone 8
+            SCAN_SCHEME: WebTests
+
+      - store_test_results:
+          path: test_output/report.xml
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: scan-test-results
+      - store_artifacts:
+          path: ~/Library/Logs/scan
+          destination: scan-logs
+
+  swiftlint:
+    docker:
+      - image: dantoml/swiftlint:latest
+    steps:
+      - checkout
+      - run: swiftlint lint --reporter junit | tee result.xml
+      - store_artifacts:
+          path: result.xml
+      - store_test_results:
+          path: result.xml
+
+  danger:
+    docker:
+      - image: dantoml/danger:latest
+    steps:
+      - checkout
+      - run: danger
+
+workflows:
+  version: 2
+  build-test-lint:
+    jobs:
+      - swiftlint
+      - danger
+      - build-and-test
