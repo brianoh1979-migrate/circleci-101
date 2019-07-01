@@ -1,23 +1,17 @@
 version: 2
 jobs:
-  build:
-    working_directory: ~/mern-starter
-    # The primary container is an instance of the first image listed. The job's commands run in this container.
-    docker:
-      - image: circleci/node:4.8.2-jessie
-    # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
-      - image: mongo:3.4.4-jessie
-    steps:
-      - checkout
-      - run:
-          name: Update npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-      - run:
-          name: Install npm wee
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+ build:
+   machine: true
+   steps:
+     - checkout
+     # start proprietary DB using private Docker image
+     # with credentials stored in the UI
+     - run: |
+         docker login -u $DOCKER_USER -p $DOCKER_PASS
+         docker run -d --name db company/proprietary-db:1.2.3
+
+     # build the application image
+     - run: docker build -t company/app:$CIRCLE_BRANCH .
+
+     # deploy the image
+     - run: docker push company/app:$CIRCLE_BRANCH
