@@ -7,8 +7,8 @@ jobs:
     steps:
       - checkout
       - run
-          command: | 
-            echo "You can even have multiline commands."
+         command: | 
+           echo "You can even have multiline commands."
       - restore_cache:
           keys:
           - v1-dependencies-
