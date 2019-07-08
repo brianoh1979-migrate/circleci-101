@@ -7,7 +7,6 @@ jobs:
     steps:
       - checkout
       - run
-          name: Waiting for MySQL to be ready
           command: | 
             echo "You can even have multiline commands."
       - restore_cache:
