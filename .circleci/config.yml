@@ -9,8 +9,8 @@ jobs:
         command: | 
           echo "You can even have multiline commands."
       - restore_cache:
-        keys: 
-        command: | 
+          keys: 
+          command: | 
             mkdir ~/cache/
       - run: 
         command: | 
