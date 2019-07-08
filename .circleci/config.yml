@@ -5,16 +5,12 @@ jobs:
       - image: circleci/node 
     steps:
       - checkout
-      - run
-        command: | 
-          echo "You can even have multiline commands."
+      - run: echo "You can even have multiline commands."
       - restore_cache:
           keys: 
           command: | 
             mkdir ~/cache/
-      - run: 
-        command: | 
-          echo "testfile" > ~/cache/log.txt
+      - run: echo "testfile" > ~/cache/log.txt
       - save_cache:
           key: v1-dependencies-
           paths: ~/cache
