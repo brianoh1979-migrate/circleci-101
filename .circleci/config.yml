@@ -8,6 +8,7 @@ jobs:
       - run: echo "You can even have multiline commands."
       - restore_cache:
           keys: 
+          - v1-dependencies-
           command: | 
             mkdir ~/cache/
       - run: echo "testfile" > ~/cache/log.txt
