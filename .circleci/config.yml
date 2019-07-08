@@ -2,22 +2,19 @@ version: 2
 jobs:
   build:
     docker: 
-      - image: circleci/node
-      
+      - image: circleci/node 
     steps:
       - checkout
       - run
-         command: | 
-           echo "You can even have multiline commands."
+        command: | 
+          echo "You can even have multiline commands."
       - restore_cache:
-          keys:
-          - v1-dependencies-
-      - run: 
-          command: | 
+        keys: 
+        command: | 
             mkdir ~/cache/
       - run: 
-          command: | 
-            echo "testfile" > ~/cache/log.txt
+        command: | 
+          echo "testfile" > ~/cache/log.txt
       - save_cache:
           key: v1-dependencies-
           paths: ~/cache
