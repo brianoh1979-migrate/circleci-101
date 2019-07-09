@@ -35,5 +35,4 @@ workflows:
             - build
       - deploy:
           only:
-            refs:
-              - production
+            - production
