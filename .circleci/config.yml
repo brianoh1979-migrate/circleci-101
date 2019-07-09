@@ -4,10 +4,25 @@ orbs:
 jobs:
   build:
     docker: 
-      - image: circleci/node 
+      - image: circleci/ruby:2.4.1
     steps:
       - build-tools/test-results:
           name: Generating test results.
           data-dir: ~/project/results
           upload: true
 # Add below this line, do not modify above
+    steps:
+      - run:
+              name: Cucumber Non-integrated
+              command: |
+                bundle exec rake cucumber
+      - run:
+          name: Save test results
+          command: |
+            mkdir -p ~/project/results
+            bundle exec cucumber --format junit --out ~/project/results/test_results.xml
+          when: always
+      - store_test_results:
+          path: ~/project/results
+      - store_artifacts:
+          path: ~/project/results
