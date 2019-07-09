@@ -21,6 +21,9 @@ jobs:
   deploy:
     docker:
       - image: circleci/node
+    branches:
+      only:
+        - production
     steps:
       - checkout
       - run: echo "Deploy complete"
@@ -34,5 +37,5 @@ workflows:
           requires:
             - build
       - deploy:
-          only:
-            - production
+          requires:
+            - test-production
