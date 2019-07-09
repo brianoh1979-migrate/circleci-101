@@ -34,8 +34,6 @@ workflows:
           requires:
             - build
       - deploy:
-          requires:
-            - test-production
           only:
             refs:
               - production
