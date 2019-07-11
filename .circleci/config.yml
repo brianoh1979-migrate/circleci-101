@@ -3,7 +3,8 @@ executors:
   custom-node: # declares a reusable executor
     docker:
       - image: circleci/node
-      
+    working_directory: ~/randomfolder
+    
 commands:
   generatelogs:
     description: "A command to generate a log file"
