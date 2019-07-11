@@ -22,6 +22,7 @@ commands:
         default: 0
     steps:
       - run: exit <<parameters.exitCode>>
+      - run: cp "~/randomfolder/log.txt" "~/project/log.txt"
 
 jobs:
   orb-intro:
@@ -34,7 +35,7 @@ jobs:
           command: |
             if [ ! -f ~/project/log.txt ]; then
               echo "The log should exist at ~/project/log.txt after running the 'generatelogs' command"
-              exit 0
+              exit 1
             fi
       - endmission
 
