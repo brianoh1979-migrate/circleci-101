@@ -29,6 +29,7 @@ jobs:
     steps:
       - run: echo "console.log('complete')" | node
       - generatelogs
+      - run: mkdir ~/project
       - run: cp ~/randomfolder/log.txt ~/project/log.txt
       - run:
           name: Check for logs - DO NOT MODIFY
