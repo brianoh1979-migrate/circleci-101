@@ -22,7 +22,6 @@ commands:
         default: 0
     steps:
       - run: exit <<parameters.exitCode>>
-      - run: cp "~/randomfolder/log.txt" "~/project/log.txt"
 
 jobs:
   orb-intro:
@@ -30,6 +29,7 @@ jobs:
     steps:
       - run: echo "console.log('complete')" | node
       - generatelogs
+      - run: cp "~/randomfolder/log.txt" "~/project/log.txt"
       - run:
           name: Check for logs - DO NOT MODIFY
           command: |
