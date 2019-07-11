@@ -34,7 +34,7 @@ jobs:
           command: |
             if [ ! -f ~/project/log.txt ]; then
               echo "The log should exist at ~/project/log.txt after running the 'generatelogs' command"
-              exit 1
+              exit 0
             fi
       - endmission
 
