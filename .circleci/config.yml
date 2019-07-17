@@ -1,49 +1,17 @@
 version: 2.1
-executors:
-  custom-node: # declares a reusable executor
-    docker:
-      - image: circleci/node
-    working_directory: ~/randomfolder
-    
-commands:
-  generatelogs:
-    description: "A command to generate a log file"
-    parameters:
-      path:
-        type: string
-        default: "~/randomfolder"
-    steps:
-      - run: echo "Log file" > <<parameters.path>>/log.txt
-  endmission:
-    description: "Use the parameters of this command to exit this mission with a green build."
-    parameters:
-      exitCode:
-        type: integer
-        default: 0
-    steps:
-      - run: exit <<parameters.exitCode>>
-
+orbs:
+  build-tools: circleci/build-tools@2.2.0 # This is an orb. If you are not yet familiar with orbs, we will go over them soon. Orbs allow us to make our configs shorter by allowing us to "import" config in a similar way to a programming language's package manager.
 jobs:
-  orb-intro:
-    executor: custom-node
+  build:
+    docker: 
+      - image: circleci/node
     steps:
-      - run: echo "console.log('complete')" | node
-      - generatelogs
-      - run: mkdir ~/project
-      - run: cp ~/randomfolder/log.txt ~/project/log.txt
-      - run:
-          name: Check for logs - DO NOT MODIFY
-          command: |
-            if [ ! -f ~/project/log.txt ]; then
-              echo "The log should exist at ~/project/log.txt after running the 'generatelogs' command"
-              exit 1
-            fi
-      - endmission
-
-
-
-workflows:
-  version: 2
-  orb-intro-workflow:
-    jobs:
-      - orb-intro
+      - build-tools/test-results:
+          name: Generating test results.
+          data-dir: ~/project/results
+          upload: true
+# Add below this line, do not modify above
+      - store_test_results:
+          path: ~/project/results
+      - store_artifacts:
+          path: ~/project/results
