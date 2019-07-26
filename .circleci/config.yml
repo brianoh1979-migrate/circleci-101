@@ -27,13 +27,13 @@ workflows:
       - build:
           filters:
             branches:
-              only: master
+              only: master #Should only run on Master Branch
       - test-production:
           requires:
             - build
           filters:
             branches:
-              only: master
+              only: master #Should only run on Master Branch
       - deploy:
           requires:
             - test-production
