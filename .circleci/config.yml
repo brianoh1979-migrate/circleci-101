@@ -1,42 +1,8 @@
-version: 2.1
-
+version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node
+      - image: debian:jessie
     steps:
       - checkout
-      - run: echo "Building complete"
-  test-production:
-    docker:
-      - image: circleci/node
-    steps:
-      - checkout
-      - run: echo "Testing complete"
-  deploy:
-    docker:
-      - image: circleci/node
-    steps:
-      - checkout
-      - run: echo "Deploy complete"
-
-workflows:
-  version: 2
-  build-test-and-deploy:
-    jobs:
-      - build:
-          filters:
-            branches:
-              only: master #Should run on Master
-      - test-production:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master #Should run on Master
-      - deploy:
-          requires:
-            - test-production
-          filters:
-            branches:
-              only: Production #Should run on new branch
+      - run: echo "A first hello"
