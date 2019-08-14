@@ -1,43 +1,18 @@
-version: 2
+version: 2.1
+orbs:
+  microscanner: 'aquasecurity/microscanner@dev:0.1.1'
 jobs:
-  one:
-    working_directory: ~/circle101
-    docker:
-      - image: circleci/clojure:boot-2.7.1-browsers
+  docker-build:
+    executor: microscanner/default
     steps:
       - checkout
-      - run: echo "A first hello"
-      - run: mkdir -p workspace
-      - run: echo "Trying out workspaces" > workspace/echo-output
-      - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory
-          root: workspace
-          # Must be relative path from root
-          paths:
-            - echo-output      
-      - run: sleep 10      
-  two:
-    docker:
-      - image: circleci/clojure:boot-2.7.1-browsers
-    steps:
-      - checkout
-      - run: echo "A more familiar hi"  
-      - run: sleep 7
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: /tmp/workspace
-
-      - run: |
-          if [[ `cat /tmp/workspace/echo-output` == "Trying out workspaces" ]]; then
-            echo "It worked!";
-          else
-            echo "Nope!"; exit 1
-          fi
+      - run: 'docker build -t myrepo/myimage:tag .'
 workflows:
-  version: 2
-  one_and_two:
+  scan-image:
     jobs:
-      - one
-      - two:
+      - docker-build
+      - microscanner/scan-image:
           requires:
-            - one
+            - docker-build
+          context: myContext
+          image: 'myrepo/myimage:mytag'
